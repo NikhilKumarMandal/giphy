@@ -1,29 +1,26 @@
 import {useEffect, useState} from "react";
 import { Link } from "react-router-dom";
-import {GifState} from "../context/context";
-import { HiEllipsisVertical, HiMiniBars3BottomRight } from "react-icons/hi2";
+import { GifState } from "../context/context";
 import GifSearch from "./GifSearch";
+import {HiEllipsisVertical, HiMiniBars3BottomRight} from "react-icons/hi2";
 
 function Header() {
 
   const [categories, setCategories] = useState([]);
   const [showCategories, setShowCategories] = useState(false);
 
- const {filter, setFilter, favorites} = GifState();
+  const { gf, filter, setFilter, favorites } = GifState();
   console.log(categories);
-
-
-   const fetchGifCategories = async () => {
-    const res = await fetch("/categories.json");
-    const {data} = await res.json();
-    setCategories(data);
-  };
+  const fetchGifCategories = async () => {
+    const { data } = await gf.categories()
+    setCategories(data)
+  }
 
   useEffect(() => {
     fetchGifCategories()
   },[])
   return (
-     <nav>
+    <nav>
       <div className="relative flex gap-4 justify-between items-center mb-2">
         <Link to={"/"} className="flex gap-2">
           <img src="/logo.svg" alt="Giphy Logo" className="w-8" />
