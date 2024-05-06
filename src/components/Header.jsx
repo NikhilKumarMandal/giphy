@@ -1,19 +1,23 @@
 import {useEffect, useState} from "react";
 import { Link } from "react-router-dom";
 import {GifState} from "../context/context";
-import {HiEllipsisVertical, HiMiniBars3BottomRight} from "react-icons/hi2";
+import { HiEllipsisVertical, HiMiniBars3BottomRight } from "react-icons/hi2";
+import GifSearch from "./GifSearch";
 
 function Header() {
 
   const [categories, setCategories] = useState([]);
   const [showCategories, setShowCategories] = useState(false);
 
-  const { gf, filter, setFilter, favorites } = GifState();
+ const {filter, setFilter, favorites} = GifState();
   console.log(categories);
-  const fetchGifCategories = async () => {
-    const { data } = await gf.categories()
-    setCategories(data)
-  }
+
+
+   const fetchGifCategories = async () => {
+    const res = await fetch("/categories.json");
+    const {data} = await res.json();
+    setCategories(data);
+  };
 
   useEffect(() => {
     fetchGifCategories()
@@ -28,7 +32,7 @@ function Header() {
           </h1>
         </Link>
 
-       <div className="font-bold text-md flex gap-2 items-center">
+        <div className="font-bold text-md flex gap-2 items-center">
           {categories?.slice(0, 5).map((category) => {
             return (
               <Link
@@ -40,10 +44,8 @@ function Header() {
               </Link>
             );
           })}
-             
-   
 
-          <button >
+          <button onClick={() => setShowCategories(!showCategories)}>
             <HiEllipsisVertical
               size={35}
               className={`py-0.5 transition ease-in-out hover:gradient ${
@@ -59,7 +61,7 @@ function Header() {
           )}
 
           {/* -- Mobile UI -- */}
-          <button >
+          <button onClick={() => setShowCategories(!showCategories)}>
             <HiMiniBars3BottomRight
               className="text-sky-400 block lg:hidden"
               size={30}
@@ -76,7 +78,7 @@ function Header() {
               {categories?.map((category) => {
                 return (
                   <Link
-                    // onClick={() => setShowCategories(false)}
+                    onClick={() => setShowCategories(false)}
                     className="transition ease-in-out font-bold"
                     key={category.name}
                     to={`/${category.name_encoded}`}
@@ -89,7 +91,7 @@ function Header() {
           </div>
         )}
       </div>
-      {/* <GifSearch  /> */}
+      <GifSearch filter={filter} setFilter={setFilter} />
     </nav>
   )
 }
